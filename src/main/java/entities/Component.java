@@ -1,11 +1,11 @@
 package entities;
 
 public class Component {
-    private int    id;
-    private String name;
-    private String category;
-    private String measureUnit;
-    private Double prisePerUnit;
+    private Integer id;
+    private String  name;
+    private String  category;
+    private String  measureUnit;
+    private Double  prisePerUnit;
 
     public Component(String name, String category, String measureUnit, Double prisePerUnit) {
         this.name = name;
