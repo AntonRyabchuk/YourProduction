@@ -2,20 +2,19 @@ package com.yourproduction.entities;
 
 import java.util.List;
 
-public class ComponentGroup implements Composite{
-    private List<Composite> components;
+public class ComponentGroup{
+    private List<ComponentGroup> components;
     private Integer id;
     private Integer parentId;
     private String  name;
-    private String  category;
 
     // GETTERS AND SETTERS
 
-    public List<Composite> getComponents() {
+    public List<ComponentGroup> getComponents() {
         return components;
     }
 
-    public void setComponents(List<Composite> components) {
+    public void setComponents(List<ComponentGroup> components) {
         this.components = components;
     }
 
@@ -41,14 +40,6 @@ public class ComponentGroup implements Composite{
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     // METHODS

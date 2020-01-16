@@ -1,18 +1,19 @@
 package com.yourproduction.entities;
 
-public class ComponentItem implements Composite{
+public class ComponentItem{
     private Integer id;
-    private Integer parentId;
     private String  name;
-    private String  category;
+    private String  groupName;
     private String  measureUnit;
     private Integer quantity;
     private Integer pricePerUnit;
 
-    public ComponentItem(Integer id, String name, String category, String measureUnit, Integer quantity, Integer pricePerUnit) {
+    // CONSTRUCTORS
+
+    public ComponentItem(Integer id, String name, String groupName, String measureUnit, Integer quantity, Integer pricePerUnit) {
         this.id = id;
         this.name = name;
-        this.category = category;
+        this.groupName = groupName;
         this.measureUnit = measureUnit;
         this.quantity = quantity;
         this.pricePerUnit = pricePerUnit;
@@ -36,12 +37,12 @@ public class ComponentItem implements Composite{
         this.name = name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public String getMeasureUnit() {
@@ -68,14 +69,6 @@ public class ComponentItem implements Composite{
         this.pricePerUnit = pricePerUnit;
     }
 
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
     // METHODS
 
     public Integer getPrice() {
@@ -87,7 +80,15 @@ public class ComponentItem implements Composite{
         //потеребить дао класс
     }
 
-    public void changeParentGroup(Integer groupId) {
-        this.parentId = groupId;
+    @Override
+    public String toString() {
+        return "ComponentItem{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", measureUnit='" + measureUnit + '\'' +
+                ", quantity=" + quantity +
+                ", pricePerUnit=" + pricePerUnit +
+                '}';
     }
 }
