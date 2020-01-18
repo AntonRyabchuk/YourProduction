@@ -3,17 +3,28 @@ package com.yourproduction.entities;
 public class ComponentItem{
     private Integer id;
     private String  name;
-    private String  groupName;
+    private Integer groupId;
     private String  measureUnit;
     private Integer quantity;
     private Integer pricePerUnit;
 
     // CONSTRUCTORS
 
-    public ComponentItem(Integer id, String name, String groupName, String measureUnit, Integer quantity, Integer pricePerUnit) {
+    public ComponentItem() {
+    }
+
+    public ComponentItem(String name, Integer groupId, String measureUnit, Integer quantity, Integer pricePerUnit) {
+        this.name = name;
+        this.groupId = groupId;
+        this.measureUnit = measureUnit;
+        this.quantity = quantity;
+        this.pricePerUnit = pricePerUnit;
+    }
+
+    public ComponentItem(Integer id, String name, Integer groupId, String measureUnit, Integer quantity, Integer pricePerUnit) {
         this.id = id;
         this.name = name;
-        this.groupName = groupName;
+        this.groupId = groupId;
         this.measureUnit = measureUnit;
         this.quantity = quantity;
         this.pricePerUnit = pricePerUnit;
@@ -37,12 +48,12 @@ public class ComponentItem{
         this.name = name;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public Integer getGroupId() {
+        return groupId;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
     }
 
     public String getMeasureUnit() {
@@ -75,17 +86,12 @@ public class ComponentItem{
         return this.pricePerUnit * this.quantity;
     }
 
-    public void remove() {
-        //remove from database
-        //потеребить дао класс
-    }
-
     @Override
     public String toString() {
         return "ComponentItem{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", groupName='" + groupName + '\'' +
+                ", groupId=" + groupId +
                 ", measureUnit='" + measureUnit + '\'' +
                 ", quantity=" + quantity +
                 ", pricePerUnit=" + pricePerUnit +

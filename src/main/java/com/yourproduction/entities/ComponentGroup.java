@@ -3,20 +3,26 @@ package com.yourproduction.entities;
 import java.util.List;
 
 public class ComponentGroup{
-    private List<ComponentGroup> components;
     private Integer id;
     private Integer parentId;
     private String  name;
 
+    // CONSTRUCTORS
+
+    public ComponentGroup() {}
+
+    public ComponentGroup(Integer parentId, String name) {
+        this.parentId = parentId;
+        this.name = name;
+    }
+
+    public ComponentGroup(Integer id, Integer parentId, String name) {
+        this.id = id;
+        this.parentId = parentId;
+        this.name = name;
+    }
+
     // GETTERS AND SETTERS
-
-    public List<ComponentGroup> getComponents() {
-        return components;
-    }
-
-    public void setComponents(List<ComponentGroup> components) {
-        this.components = components;
-    }
 
     public Integer getId() {
         return id;
@@ -44,11 +50,16 @@ public class ComponentGroup{
 
     // METHODS
 
-    public void remove() {
-        //remove from bd by dao class
-    }
-
     public void changeParentGroup(Integer groupId) {
         this.parentId = groupId;
+    }
+
+    @Override
+    public String toString() {
+        return "ComponentGroup{" +
+                "id=" + id +
+                ", parentId=" + parentId +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
