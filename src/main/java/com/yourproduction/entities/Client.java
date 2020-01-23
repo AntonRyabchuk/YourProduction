@@ -6,6 +6,13 @@ public class Client {
 
     // CONSTRUCTORS
 
+    public Client() {
+    }
+
+    public Client(String clientName) {
+        this.clientName = clientName;
+    }
+
     public Client(Integer clientId, String clientName) {
         this.clientId = clientId;
         this.clientName = clientName;
@@ -27,5 +34,16 @@ public class Client {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    // METHODS
+
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "clientId=" + clientId +
+                ", clientName='" + clientName + '\'' +
+                '}';
     }
 }

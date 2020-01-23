@@ -1,5 +1,6 @@
 package com.yourproduction.entities;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class Order {
@@ -84,5 +85,25 @@ public class Order {
             summ += operation.getPrice();
         }
         return summ;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "operations=" + Arrays.toString(operations) +
+                ", id=" + id +
+                ", client=" + client +
+                ", manager='" + manager + '\'' +
+                ", created=" + created +
+                ", orderDeadline=" + orderDeadline +
+                ", comments='" + comments + '\'' +
+                '}';
+    }
+
+    public boolean addOperation(Operation operation){
+        //сначала дао, потом этот метод ??
+        int componentsCount = this.getOperations().length;
+        this.getOperations()[componentsCount] = operation;
+        return true;
     }
 }

@@ -13,23 +13,37 @@ public class ComponentGroupDAO {
 
     public static void main(String[] args) {
         ComponentGroupDAO componentGroupDAO = new ComponentGroupDAO();
+        System.out.println("testing getAll:");
         componentGroupDAO.getAll().forEach(System.out::println);
 
-        System.out.println("testing getEntityById():");
+        System.out.println();
+
+        System.out.println("testing getById:");
         System.out.println(componentGroupDAO.getById(1));
 
-        System.out.println("testing getEntityByName():");
+        System.out.println();
+
+        System.out.println("testing getByName:");
         System.out.println(componentGroupDAO.getByName("food"));
 
-        System.out.println("testing delete(id):");
-        System.out.println(componentGroupDAO.delete(4));
+        System.out.println();
 
-//        System.out.println("testing create():");
-//        ComponentGroup componentGroup = new ComponentGroup(1, "ХЛеб");
-//        System.out.println(componentGroupDAO.create(componentGroup));
+        System.out.println("testing create:");
+        ComponentGroup createdCompGroup = new ComponentGroup(1, "ХЛеб");
+        System.out.println(createdCompGroup);
+        System.out.print(componentGroupDAO.create(createdCompGroup) + "  ");
+        System.out.println(createdCompGroup);
 
-        System.out.println("testing update():");
-        System.out.println(componentGroupDAO.update(new ComponentGroup(3, 1, "CHeeSe")));
+        System.out.println();
+
+        System.out.println("testing deleteById:");
+        System.out.println(componentGroupDAO.deleteById(createdCompGroup.getId()));
+
+        System.out.println();
+
+        System.out.println("testing update:");
+        ComponentGroup updCompGroup = new ComponentGroup(3, 1, "sugaR");
+        System.out.println(componentGroupDAO.update(updCompGroup));
     }
 
     private static ComponentGroup resultToComponentGroup(ResultSet resultSet) throws SQLException {
@@ -43,11 +57,12 @@ public class ComponentGroupDAO {
     public List<ComponentGroup> getAll() {
 
         List<ComponentGroup> componentGroupList = new LinkedList<>();
+        String sql = "SELECT * FROM " + componentGroupTableName + ";";
 
         try (Connection connection = Database.getConnection();
-             Statement statement = connection.createStatement()) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + componentGroupTableName + ";");
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()){
                 componentGroupList.add(resultToComponentGroup(resultSet));
@@ -55,7 +70,7 @@ public class ComponentGroupDAO {
             return componentGroupList;
 
         } catch (SQLException e) {
-            System.err.println("Can`t get all groups");
+            System.err.println("Can`t get all groups from " + componentGroupTableName);
             e.printStackTrace();
         }
         return null;
@@ -63,33 +78,40 @@ public class ComponentGroupDAO {
 
     public ComponentGroup getById(Integer id) {
 
-        try (Connection connection = Database.getConnection();
-             Statement statement = connection.createStatement()) {
+        String sql = "SELECT * FROM " + componentGroupTableName + " WHERE id=?;";
 
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + componentGroupTableName + " WHERE id=" + id + ";");
+        try (Connection connection = Database.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             resultSet.next();
             if(!resultSet.isLast()){
-                System.err.println("getEntityById() has more than one results or no results");
+                System.err.println("getEntityById() has more than one results or no results in " + componentGroupTableName);
                 throw new SQLException();
             }
 
             return resultToComponentGroup(resultSet);
 
         } catch (SQLException e) {
-            System.err.println("Can`t get component group by id");
+            System.err.println("Can`t get component group by id from " + componentGroupTableName);
             e.printStackTrace();
         }
         return null;
     }
 
     public ComponentGroup getByName(String name) {
+
+        String sql = "SELECT * FROM " + componentGroupTableName + " WHERE name=?;";
+
         try (Connection connection = Database.getConnection();
-             Statement statement = connection.createStatement()) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + componentGroupTableName + " WHERE name=\"" + name + "\";");
+            preparedStatement.setString(1, name);
 
-            ComponentGroup componentGroup = new ComponentGroup();
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             resultSet.next();
             if(!resultSet.isLast()){
@@ -128,11 +150,16 @@ public class ComponentGroupDAO {
         return false;
     }
 
-    public boolean delete(Integer id) {
-        try (Connection connection = Database.getConnection();
-             Statement statement = connection.createStatement()) {
+    public boolean deleteById(Integer id) {
 
-            statement.executeUpdate("DELETE FROM " + componentGroupTableName + " WHERE id=" + id + ";");
+        String sql = "DELETE FROM " + componentGroupTableName + " WHERE id=?;";
+
+        try (Connection connection = Database.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.executeUpdate();
 
             return true;
 
@@ -148,12 +175,25 @@ public class ComponentGroupDAO {
         String sql = "INSERT INTO " + componentGroupTableName + " (name, parent_id) VALUES (?, ?);";
 
         try (Connection connection = Database.getConnection();
-             PreparedStatement prepStatement = connection.prepareStatement(sql)) {
+             PreparedStatement prepStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             prepStatement.setString(1, componentGroup.getName().toLowerCase());
             prepStatement.setInt(2, componentGroup.getParentId());
 
-            prepStatement.executeUpdate();
+            int affectedRows = prepStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating " + componentGroup + " failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = prepStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    componentGroup.setId(generatedKeys.getInt(1));
+                }
+                else {
+                    throw new SQLException("Creating " + componentGroup + " failed, no ID obtained.");
+                }
+            }
 
             return true;
 

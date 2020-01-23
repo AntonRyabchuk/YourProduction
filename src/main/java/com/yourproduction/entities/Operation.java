@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class Operation {
-    private static final int maximumComponents = 10;
+    static final int maximumComponents = 10;
+
     private ComponentItem[] components;
     private Integer id;
     private Integer operationTypeId;
@@ -101,12 +102,22 @@ public class Operation {
     @Override
     public String toString() {
         return "Operation{" +
-                "components=" + Arrays.toString(components) +
-                ", id=" + id +
+                "id=" + id +
                 ", operationTypeId=" + operationTypeId +
                 ", operationDeadline=" + operationDeadline +
                 ", task='" + task + '\'' +
                 ", isComplete=" + isComplete +
+                ", components=" + Arrays.toString(components) +
                 '}';
+    }
+
+    public boolean addComponentItem(ComponentItem componentItem){
+        //сначала дао, потом этот метод
+        int componentsCount = this.getComponents().length;
+        if(componentsCount > 9){
+            return false;
+        }
+        this.getComponents()[componentsCount] = componentItem;
+        return true;
     }
 }
