@@ -101,13 +101,17 @@ public class Operation {
 
     @Override
     public String toString() {
+        String compStrings = "";
+        for (ComponentItem componentItem: this.components) {
+            compStrings = compStrings + "\n    " + componentItem.toString();
+        }
         return "Operation{" +
                 "id=" + id +
                 ", operationTypeId=" + operationTypeId +
                 ", operationDeadline=" + operationDeadline +
                 ", task='" + task + '\'' +
                 ", isComplete=" + isComplete +
-                ", components=" + Arrays.toString(components) +
+                ", \ncomponents=" + compStrings +
                 '}';
     }
 

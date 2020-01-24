@@ -15,32 +15,19 @@ public class OperationDAO {
 
     public static void main(String[] args) throws SQLException {
         OperationDAO operationDAO = new OperationDAO();
-//
+
 //        System.out.println("testing getAll:");
 //        operationDAO.getAll().forEach(System.out::println);
-//
-//        System.out.println();
-//
-//        System.out.println("testing getById(1):");
-//        Operation operation1 = operationDAO.getById(1);
-//        System.out.println(operation1);
-//
-//        System.out.println();
-//
-//        System.out.println("testing update:");
-//        operation1.setComplete(true);
-//        operation1.setTask("более подругому");
-//        System.out.println(operationDAO.update(operation1) + "  " + operation1);
-//
-//        System.out.println();
-//
-//        System.out.println("testing create:");
-//        ComponentItem[] componentItems = {new ComponentItem("ff", 1, "литр", 1, 5),
-//                                          new ComponentItem("ff", 1, "литр", 1, 10)};
-//        Operation createdOperation = new Operation(componentItems, 1, new Date(), "дорохо бохато", false);
-//        System.out.println(operationDAO.create(createdOperation));
-//
-//        System.out.println();
+
+        System.out.println("testing getById(1):");
+        Operation operation1 = operationDAO.getById(1);
+        System.out.println(operation1);
+
+        System.out.println("testing update:");
+        operation1.setComplete(false);
+        operation1.setTask("test update1");
+        operationDAO.update(operation1);
+        System.out.println(operationDAO.getById(operation1.getId()));
 
 //        System.out.println("testing addCurrentComponent(Operation, Component)");
 //        CurrentComponentItemDAO currentComponentItemDAO = new CurrentComponentItemDAO();
@@ -48,13 +35,22 @@ public class OperationDAO {
 //        ComponentItem addingComponentItem = new ComponentItem("jj", 1, "gr", 100, 5);
 //        operationDAO.addCurrentComponent(addCurrCompOperationTest, addingComponentItem);
 
+        System.out.println("testing updateComponent");
+        //.....??
 
-        System.out.println("testing delete(id):");
-        System.out.println(operationDAO.delete(4));
+//        System.out.println("testing create:");
+//        ComponentItem[] componentItems = {new ComponentItem("ff", 1, "литр", 1, 5),
+//                                          new ComponentItem("ff", 1, "литр", 1, 10)};
+//        Operation createdOperation = new Operation(componentItems, 1, new Date(), "дорохо бохато", false);
+//        System.out.println(operationDAO.create(createdOperation));
+//
+//        System.out.println("testing delete(id):");
+//        System.out.println(operationDAO.delete(4));
 
     }
 
     private static Operation resultToOperation(ResultSet resultSet) throws SQLException {
+
         Operation operation = new Operation();
         operation.setId(resultSet.getInt("id"));
         operation.setOperationTypeId(resultSet.getInt("type_id"));
@@ -68,6 +64,7 @@ public class OperationDAO {
 
         for(int i = 0; i < componentsCount; i++){
             components[i] = currentComponentItemDAO.getById(resultSet.getInt("comp" + i));
+            components[i].setQuantity(resultSet.getInt("q" + (i)));
         }
         operation.setComponents(components);
 
@@ -109,7 +106,7 @@ public class OperationDAO {
 
             resultSet.next();
             if(!resultSet.isLast()){
-                System.err.println("getEntityById() has more than one results or no results");
+                System.err.println("operation.getById() has more than one results or no results");
                 throw new SQLException();
             }
 
@@ -123,6 +120,7 @@ public class OperationDAO {
     }
 
     public boolean update(Operation operation) {
+        // operation должен иметь поле id != null
         // изменение компонентов происходит отдельно по клику по ним
         // добавление компонента - отдельный метод add currentComponent
 
@@ -134,7 +132,7 @@ public class OperationDAO {
             prepStatement.setInt(1, operation.getOperationTypeId());
             prepStatement.setString(2, toSQLDate(operation.getOperationDeadline()));
             prepStatement.setString(3, operation.getTask());
-            prepStatement.setInt(4, operation.getComplete() ? 1 : 2);
+            prepStatement.setInt(4, operation.getComplete() ? 1 : 0);
             prepStatement.setInt(5, operation.getId());
 
             prepStatement.executeUpdate();
@@ -146,6 +144,10 @@ public class OperationDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean updateComponent(ComponentItem updComp){
+        return  false;
     }
 
     public boolean addCurrentComponent(Operation operation, ComponentItem addingComponent){
