@@ -1,3 +1,2 @@
 # YourProduction
-Pet project for study <br>
-The company closed :(
+Pet project for study (The company closed)
